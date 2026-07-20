@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: We Fresh Content Audit
- * Description: تاریخ آخرین به‌روزرسانی نوشته‌ها، برگه‌ها، دسته‌ها و برچسب‌ها + جست‌وجوی کلمه کلیدی و شمارش لینک داخلی (Rank Math / Yoast).
- * Version:     1.0.0
+ * Description: Track content updates, search keywords, and analyze internal links for WordPress SEO workflows.
+ * Version:     1.0.1
  * Author:      Wenet
  * Author URI:  https://wenet.website
  */
@@ -10,11 +10,10 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class WNT_Content_Audit {
-
 	const META_MODIFIED   = '_wnt_term_modified';
 	const META_INCOMING   = '_wnt_term_incoming';
 	const META_INCOMING_T = '_wnt_term_incoming_time';
-	const CACHE_TTL       = 43200; // ۱۲ ساعت
+	const CACHE_TTL       = 43200; // 
 	const PER_PAGE        = 100;
 
 	public function __construct() {
@@ -26,7 +25,6 @@ class WNT_Content_Audit {
 		add_action( 'wp_dashboard_setup', array( $this, 'dashboard_widget' ) );
 	}
 
-	/* ---------- ثبت تاریخ ویرایش ترم‌ها ---------- */
 
 	public function touch_term( $term_id, $tt_id = 0, $taxonomy = '' ) {
 		update_term_meta( $term_id, self::META_MODIFIED, current_time( 'mysql' ) );
@@ -37,8 +35,6 @@ class WNT_Content_Audit {
 		if ( in_array( $meta_key, $skip, true ) ) { return; }
 		update_term_meta( $term_id, self::META_MODIFIED, current_time( 'mysql' ) );
 	}
-
-	/* ---------- بازسازی تاریخ اولیه ---------- */
 
 	private function backfill() {
 		global $wpdb;
@@ -61,8 +57,6 @@ class WNT_Content_Audit {
 		}
 		return $done;
 	}
-
-	/* ---------- منابع ---------- */
 
 	private function post_types() {
 		$allow = array( 'post', 'page' ); // برای افزودن محصول: array( 'post', 'page', 'product' )
@@ -122,7 +116,6 @@ class WNT_Content_Audit {
 		return $out;
 	}
 
-	/** Rank Math و Yoast لینک ورودیِ ترم‌ها را نگه نمی‌دارند؛ با اسکن محتوا محاسبه و کش می‌شود. */
 	private function term_incoming( $term ) {
 		$cached = get_term_meta( $term->term_id, self::META_INCOMING, true );
 		$ts     = (int) get_term_meta( $term->term_id, self::META_INCOMING_T, true );
@@ -142,8 +135,6 @@ class WNT_Content_Audit {
 		update_term_meta( $term->term_id, self::META_INCOMING_T, time() );
 		return $count;
 	}
-
-	/* ---------- جست‌وجو ---------- */
 
 	private function search_posts( $kw, $types ) {
 		global $wpdb;
@@ -173,7 +164,6 @@ class WNT_Content_Audit {
 		return $all;
 	}
 
-	/** شناسه‌هایی که noindex هستند. $type = post | term */
 	private function noindex_ids( $type, array $ids ) {
 		$ids = array_map( 'absint', array_filter( $ids ) );
 		if ( empty( $ids ) ) { return array(); }
@@ -198,8 +188,6 @@ class WNT_Content_Audit {
 		}
 		return $bad;
 	}
-
-	/* ---------- رابط مدیریت ---------- */
 
 	public function menu() {
 		add_menu_page( 'بررسی تازگی محتوا', 'بررسی تازگی محتوا ', 'edit_others_posts',
@@ -266,7 +254,6 @@ class WNT_Content_Audit {
 
 		if ( '' === $kw ) { echo '</div>'; return; }
 
-		/* ساخت ردیف‌ها */
 		$rows  = array();
 		$posts = $this->search_posts( $kw, $types );
 
@@ -364,8 +351,6 @@ class WNT_Content_Audit {
 		<?php
 	}
 	
-	/* ---------- ویجت داشبورد ---------- */
-
 	public function dashboard_widget() {
 		if ( ! current_user_can( 'edit_others_posts' ) ) { return; }
 		wp_add_dashboard_widget( 'wnt_audit_report', 'گزارش تازگی محتوا (Content Freshness)', array( $this, 'render_dashboard' ) );
@@ -533,8 +518,6 @@ class WNT_Content_Audit {
 if ( ! isset( $GLOBALS['wnt_content_audit'] ) ) {
 	$GLOBALS['wnt_content_audit'] = new WNT_Content_Audit();
 }
-
-/* ---------- Plugin Update Checker (GitHub) ---------- */
 
 $puc = __DIR__ . '/plugin-update-checker/plugin-update-checker.php';
 
