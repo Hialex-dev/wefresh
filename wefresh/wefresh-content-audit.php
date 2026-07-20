@@ -1,16 +1,10 @@
 <?php
 /**
- * Plugin Name: WE Fresh Content Audit
- * Plugin URI:  https://github.com/Hialex-dev/wefresh
- * Description: Track the last modified date of posts, pages, categories, tags, and WooCommerce product taxonomies. Includes keyword search and internal link analysis.
+ * Plugin Name: We Fresh Content Audit
+ * Description: تاریخ آخرین به‌روزرسانی نوشته‌ها، برگه‌ها، دسته‌ها و برچسب‌ها + جست‌وجوی کلمه کلیدی و شمارش لینک داخلی (Rank Math / Yoast).
  * Version:     1.0.0
- * Requires at least: 6.5
- * Requires PHP: 7.4
- * Author:       Wenet
- * Author URI:   https://wenet.website
- * License:      GPL-2.0-or-later
- * License URI:  https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:  wefresh-content-audit
+ * Author:      Wenet
+ * Author URI:  https://wenet.website
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
@@ -534,4 +528,30 @@ class WNT_Content_Audit {
 	}
 }
 
-new WNT_Content_Audit();
+
+
+if ( ! isset( $GLOBALS['wnt_content_audit'] ) ) {
+	$GLOBALS['wnt_content_audit'] = new WNT_Content_Audit();
+}
+
+/* ---------- Plugin Update Checker (GitHub) ---------- */
+
+$puc = __DIR__ . '/plugin-update-checker/plugin-update-checker.php';
+
+if ( file_exists( $puc ) ) {
+
+    require_once $puc;
+
+    if ( class_exists( '\YahnisElsts\PluginUpdateChecker\v5\PucFactory' ) ) {
+
+        $checker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+            'https://github.com/Hialex-dev/wefresh',
+            __FILE__,
+            'wefresh'
+        );
+
+        $checker->getVcsApi()->enableReleaseAssets();
+
+    }
+
+}
