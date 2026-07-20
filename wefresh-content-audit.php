@@ -1,10 +1,16 @@
 <?php
 /**
- * Plugin Name: We Fresh Content Audit
- * Description: تاریخ آخرین به‌روزرسانی نوشته‌ها، برگه‌ها، دسته‌ها و برچسب‌ها + جست‌وجوی کلمه کلیدی و شمارش لینک داخلی (Rank Math / Yoast).
+ * Plugin Name: WE Fresh Content Audit
+ * Plugin URI:  https://github.com/Hialex-dev/wefresh
+ * Description: Track the last modified date of posts, pages, categories, tags, and WooCommerce product taxonomies. Includes keyword search and internal link analysis.
  * Version:     1.0.0
- * Author:      Wenet
- * Author URI:  https://wenet.website
+ * Requires at least: 6.5
+ * Requires PHP: 7.4
+ * Author:       Wenet
+ * Author URI:   https://wenet.website
+ * License:      GPL-2.0-or-later
+ * License URI:  https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:  wefresh-content-audit
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
